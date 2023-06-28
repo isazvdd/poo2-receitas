@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/foundation.dart';
 
-class DataService {
+class DataService with ChangeNotifier {
   final ValueNotifier<List> tableStateNotifier = ValueNotifier([]);
 
   List<String> getColumNames() {
@@ -50,6 +51,7 @@ class DataService {
       {"name": "Café 2", "origem": "Colômbia", "intensidade": "Média"},
       {"name": "Café 3", "origem": "Etiópia", "intensidade": "Suave"}
     ];
+    notifyListeners();
   }
 
   void carregarCervejas() {
@@ -58,6 +60,7 @@ class DataService {
       {"name": "Cerveja 2", "style": "Stout", "ibu": "40"},
       {"name": "Cerveja 3", "style": "Pilsner", "ibu": "25"}
     ];
+    notifyListeners();
   }
 
   void carregarNacoes() {
@@ -66,6 +69,7 @@ class DataService {
       {"name": "País 2", "continente": "Europa", "populacao": "50 milhões"},
       {"name": "País 3", "continente": "Ásia", "populacao": "200 milhões"}
     ];
+    notifyListeners();
   }
 }
 
@@ -148,6 +152,16 @@ class DataTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (columnNames.isEmpty) {
+      // Exibe uma mensagem ou widget alternativo quando não há colunas
+      return Center(
+        child: Text(
+          'Nenhum dado disponível.',
+          style: TextStyle(fontSize: 16),
+        ),
+      );
+    }
+
     return DataTable(
       columns: columnNames
           .map(
