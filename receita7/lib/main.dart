@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:http/http.dart' as http;
-
 import 'dart:convert';
 
 class DataService {
@@ -69,9 +68,7 @@ class DataService {
 final dataService = DataService();
 
 void main() {
-  MyApp app = MyApp();
-
-  runApp(app);
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -87,6 +84,26 @@ class MyApp extends StatelessWidget {
         body: ValueListenableBuilder(
           valueListenable: dataService.tableStateNotifier,
           builder: (_, value, __) {
+            List<String> cafeColumnNames = [
+              "Nome",
+              "Origem",
+              "Variedade",
+              "Notas",
+              "Intensificador"
+            ];
+            List<String> nacoesColumnNames = [
+              "País",
+              "Capital",
+              "População",
+              "Área",
+              "Língua"
+            ];
+
+            List<String> columnNames =
+                dataService.selectedOptionNotifier.value == 0
+                    ? cafeColumnNames
+                    : nacoesColumnNames;
+
             return DataTableWidget(
               jsonObjects: value,
               propertyNames: [
@@ -96,13 +113,9 @@ class MyApp extends StatelessWidget {
                 "notes",
                 "intensifier"
               ],
-              columnNames: [
-                "Nome",
-                "Origem",
-                "Variedade",
-                "Notas",
-                "Intensificador"
-              ],
+              columnNames: columnNames,
+              cafeColumnNames: cafeColumnNames,
+              nacoesColumnNames: nacoesColumnNames,
             );
           },
         ),
@@ -203,11 +216,15 @@ class DataTableWidget extends StatelessWidget {
   final List jsonObjects;
   final List<String> propertyNames;
   final List<String> columnNames;
+  final List<String> cafeColumnNames;
+  final List<String> nacoesColumnNames;
 
   DataTableWidget({
     required this.jsonObjects,
     required this.propertyNames,
     required this.columnNames,
+    required this.cafeColumnNames,
+    required this.nacoesColumnNames,
   });
 
   @override
